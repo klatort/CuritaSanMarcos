@@ -31,6 +31,11 @@ El proyecto está configurado para ejecutarse fácilmente usando Docker Compose,
 
 4. El bot se iniciará automáticamente y se conectará a la base de datos MySQL
 
+5. **IMPORTANTE**: Para escanear el código QR y conectar WhatsApp:
+   - El código QR se generará como archivo `bot.qr.png` en la carpeta raíz del proyecto
+   - También puedes acceder a la interfaz web del QR en: http://localhost:3000
+   - Escanea el código QR con tu aplicación de WhatsApp para conectar el bot
+
 #### Comandos útiles
 - Ver logs: `docker-compose logs -f`
 - Detener servicios: `docker-compose down`

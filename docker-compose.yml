@@ -1,6 +1,3 @@
-# Docker Compose carga automáticamente las variables de entorno del archivo .env
-# que se encuentra en el mismo directorio que este archivo docker-compose.yml
-# Se puede usar 'cp .env.example .env' para crear rápidamente un archivo .env funcional
 version: '3.8'
 
 services:
@@ -18,13 +15,18 @@ services:
       - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
       - MYSQL_DB_NAME=${MYSQL_DB_NAME}
       - MYSQL_DB_PORT=3306
+      - NODE_ENV=production
     volumes:
       - ./bot_sessions:/app/bot_sessions
       - ./Imagenes:/app/Imagenes
+      - ./:/app
+      - /app/node_modules
     networks:
       - curita-network
     ports:
-      - "3000:3000"  # Ajustar si el bot necesita un puerto específico
+      - "127.0.0.1:3000:3000"
+    security_opt:
+      - no-new-privileges:true
 
   mysql:
     image: mysql:8
@@ -33,11 +35,15 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_USER=${MYSQL_DB_USER}
+      - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
       - ./bd/script.sql:/docker-entrypoint-initdb.d/script.sql:ro
     ports:
-      - "3307:3306"  # Mapear al puerto 3307 en el host para evitar conflictos
+      - "127.0.0.1:3307:3306"
+    security_opt:
+      - no-new-privileges:true
     networks:
       - curita-network
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
