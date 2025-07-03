@@ -16,8 +16,8 @@ const MYSQL_DB_NAME = process.env.MYSQL_DB_NAME
 const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 
 
-// const flowSaludar = require('./flujos/flowSaludar')
-// const flowWelcome = require('./flujos/flowWelcome')
+const flowSaludar = require('./flujos/flowSaludar')
+const flowWelcome = require('./flujos/flowWelcome')
 // const flowVerCitas = require('./flujos/flowVerCitas')
 // const flowReservar = require('./flujos/flowReservar')
 // const flowConsultas = require('./flujos/flowConsultas')
@@ -37,8 +37,8 @@ const main = async () => {
         })
 
         const adapterFlow = createFlow([
-            // flowSaludar, 
-            // flowWelcome, 
+            flowSaludar, 
+            flowWelcome
             // menuFlow, 
             // flowConsultas, 
             // flowReservar, 
