@@ -15,12 +15,12 @@ const MYSQL_DB_NAME = 'curitasanmarcos'
 const MYSQL_DB_PORT = '3306'
 
 
-const flowSaludar = require('./flujos/flowSaludar')
-const flowWelcome = require('./flujos/flowWelcome')
-const flowVerCitas = require('./flujos/flowVerCitas')
-const flowReservar = require('./flujos/flowReservar')
-const flowConsultas = require('./flujos/flowConsultas')
-const menuFlow = require('./flujos/menuFlow')
+// const flowSaludar = require('./flujos/flowSaludar')
+// const flowWelcome = require('./flujos/flowWelcome')
+// const flowVerCitas = require('./flujos/flowVerCitas')
+// const flowReservar = require('./flujos/flowReservar')
+// const flowConsultas = require('./flujos/flowConsultas')
+// const menuFlow = require('./flujos/menuFlow')
 
 
 
@@ -36,12 +36,12 @@ const main = async () => {
         })
 
         const adapterFlow = createFlow([
-            flowSaludar, 
-            flowWelcome, 
-            menuFlow, 
-            flowConsultas, 
-            flowReservar, 
-            flowVerCitas
+            // flowSaludar, 
+            // flowWelcome, 
+            // menuFlow, 
+            // flowConsultas, 
+            // flowReservar, 
+            // flowVerCitas
         ])
         const adapterProvider = createProvider(BaileysProvider)
 
