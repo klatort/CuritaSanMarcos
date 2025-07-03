@@ -1,0 +1,25 @@
+[handleMsg]:  {
+  key: {
+    remoteJid: '51959799190@s.whatsapp.net',
+    fromMe: false,
+    id: '3EB057E619ED76C9CDE91C',
+    participant: undefined
+  },
+  messageTimestamp: 1751519080,
+  pushName: 'José📲',
+  broadcast: false,
+  message: Message {
+    extendedTextMessage: ExtendedTextMessage {
+      text: 'que fue?',
+      contextInfo: [ContextInfo],
+      inviteLinkGroupTypeV2: 0
+    },
+    messageContextInfo: MessageContextInfo {
+      deviceListMetadata: [DeviceListMetadata],
+      deviceListMetadataVersion: 2,
+      messageSecret: [Uint8Array]
+    }
+  },
+  body: 'que fue?',
+  from: '51959799190'
+}
