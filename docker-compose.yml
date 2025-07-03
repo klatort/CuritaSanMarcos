@@ -1,0 +1,51 @@
+# Docker Compose carga automáticamente las variables de entorno del archivo .env
+# que se encuentra en el mismo directorio que este archivo docker-compose.yml
+# Se puede usar 'cp .env.example .env' para crear rápidamente un archivo .env funcional
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: curita-bot
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_DB_HOST=mysql
+      - MYSQL_DB_USER=${MYSQL_DB_USER}
+      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DB_NAME=${MYSQL_DB_NAME}
+      - MYSQL_DB_PORT=3306
+    volumes:
+      - ./bot_sessions:/app/bot_sessions
+      - ./Imagenes:/app/Imagenes
+    networks:
+      - curita-network
+    ports:
+      - "3000:3000"  # Ajustar si el bot necesita un puerto específico
+
+  mysql:
+    image: mysql:8
+    container_name: curita-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./bd/script.sql:/docker-entrypoint-initdb.d/script.sql:ro
+    ports:
+      - "3307:3306"  # Mapear al puerto 3307 en el host para evitar conflictos
+    networks:
+      - curita-network
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  curita-network:
+    driver: bridge

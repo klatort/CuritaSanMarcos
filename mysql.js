@@ -2,7 +2,7 @@
 const connection = mysqlConsultas.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '4819508Mysql.',
+  password: '********', // Password removed for security
   database: 'curitasanmarcos'
 });
 
