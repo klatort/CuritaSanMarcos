@@ -4,23 +4,24 @@ const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 // Esto me ayudo: npm install @bot-whatsapp/database@latest
 // https://chatgpt.com/share/67cd1fbd-eae0-800c-bd4b-f78c41c13c1c
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
+require('dotenv').config()
 
 /**
- * Declaramos las conexiones de MySQL
+ * Obtenemos las variables de entorno para la conexión MySQL
  */
-const MYSQL_DB_HOST = 'localhost'
-const MYSQL_DB_USER = 'root'
-const MYSQL_DB_PASSWORD = '4819508Mysql.'
-const MYSQL_DB_NAME = 'curitasanmarcos'
-const MYSQL_DB_PORT = '3306'
+const MYSQL_DB_HOST = process.env.MYSQL_DB_HOST
+const MYSQL_DB_USER = process.env.MYSQL_DB_USER
+const MYSQL_DB_PASSWORD = process.env.MYSQL_DB_PASSWORD
+const MYSQL_DB_NAME = process.env.MYSQL_DB_NAME
+const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 
 
-const flowSaludar = require('./flujos/flowSaludar')
-const flowWelcome = require('./flujos/flowWelcome')
-const flowVerCitas = require('./flujos/flowVerCitas')
-const flowReservar = require('./flujos/flowReservar')
-const flowConsultas = require('./flujos/flowConsultas')
-const menuFlow = require('./flujos/menuFlow')
+// const flowSaludar = require('./flujos/flowSaludar')
+// const flowWelcome = require('./flujos/flowWelcome')
+// const flowVerCitas = require('./flujos/flowVerCitas')
+// const flowReservar = require('./flujos/flowReservar')
+// const flowConsultas = require('./flujos/flowConsultas')
+// const menuFlow = require('./flujos/menuFlow')
 
 
 
@@ -36,12 +37,12 @@ const main = async () => {
         })
 
         const adapterFlow = createFlow([
-            flowSaludar, 
-            flowWelcome, 
-            menuFlow, 
-            flowConsultas, 
-            flowReservar, 
-            flowVerCitas
+            // flowSaludar, 
+            // flowWelcome, 
+            // menuFlow, 
+            // flowConsultas, 
+            // flowReservar, 
+            // flowVerCitas
         ])
         const adapterProvider = createProvider(BaileysProvider)
 

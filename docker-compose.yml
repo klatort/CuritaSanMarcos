@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: curita-bot
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_DB_HOST=mysql
+      - MYSQL_DB_USER=${MYSQL_DB_USER}
+      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DB_NAME=${MYSQL_DB_NAME}
+      - MYSQL_DB_PORT=3306
+      - NODE_ENV=production
+    volumes:
+      - ./bot_sessions:/app/bot_sessions
+      - ./Imagenes:/app/Imagenes
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - curita-network
+    ports:
+      - "127.0.0.1:3000:3000"
+    security_opt:
+      - no-new-privileges:true
+
+  mysql:
+    image: mysql:8
+    container_name: curita-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_USER=${MYSQL_DB_USER}
+      - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./bd/script.sql:/docker-entrypoint-initdb.d/script.sql:ro
+    ports:
+      - "127.0.0.1:3307:3306"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - curita-network
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  curita-network:
+    driver: bridge

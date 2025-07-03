@@ -2,7 +2,7 @@
 const connection = mysqlConsultas.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '4819508Mysql.',
+  password: '********', // Password removed for security
   database: 'curitasanmarcos'
 });
 
@@ -20,12 +20,13 @@ connection.query('Select * from medicos', (err, rows)=> {
 connection.end()
 */
 
+require('dotenv').config()
 const mysqlConsultas = require('mysql2')
 const connection = mysqlConsultas.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '4819508Mysql.',
-  database: 'curitasanmarcos'
+  host: process.env.MYSQL_DB_HOST,
+  user: process.env.MYSQL_DB_USER,
+  password: process.env.MYSQL_DB_PASSWORD,
+  database: process.env.MYSQL_DB_NAME
 });
 
 connection.connect((err) => {
