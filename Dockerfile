@@ -1,19 +1,24 @@
-FROM node:18-bullseye-slim AS bot
+FROM node:18-alpine as node
 
 WORKDIR /app
+# Installs latest Chromium (92) package.
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont \
+      nodejs \
+      yarn
 
-# Copiar archivos de dependencias primero para aprovechar la caché de Docker
-COPY package*.json ./
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Instalar dependencias y preparar directorios
-RUN npm i && \
-    mkdir -p /tmp/bot_sessions && \
-    chmod -R 777 /tmp/bot_sessions && \
-    chown -R node:node /app
-
-# Copiar el resto del código fuente
+# Puppeteer v10.0.0 works with Chromium 92.
 COPY . .
-
-USER node
+RUN npm install puppeteer@10.0.0
+RUN npm install
 
 CMD ["npm", "start"]
