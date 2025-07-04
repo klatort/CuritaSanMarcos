@@ -18,7 +18,7 @@ services:
       - MYSQL_DB_PORT=3306
       - NODE_ENV=production
     volumes:
-      - bot-sessions:/app/bot_sessions
+      - bot-sessions:/tmp/bot_sessions
     networks:
       - curita-network
     ports:
