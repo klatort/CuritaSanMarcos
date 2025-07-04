@@ -61,10 +61,10 @@ jobs:
           # Check if containers are running
           if docker compose ps | grep -q "Up"; then
             echo "✅ Deployment successful - containers are running"
-            docker-compose ps
+            docker compose ps
           else
             echo "❌ Deployment failed - containers are not running"
-            docker-compose logs
+            docker compose logs
             exit 1
           fi
           
