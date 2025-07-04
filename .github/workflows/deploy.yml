@@ -59,7 +59,7 @@ jobs:
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           cd ${{ secrets.SERVER_PATH }}
           # Check if containers are running
-          if docker-compose ps | grep -q "Up"; then
+          if docker compose ps | grep -q "Up"; then
             echo "✅ Deployment successful - containers are running"
             docker-compose ps
           else
@@ -69,7 +69,7 @@ jobs:
           fi
           
           # Optional: Check if the bot service is accessible
-          if docker-compose exec -T bot curl -f http://localhost:3000 > /dev/null 2>&1; then
+          if docker compose exec -T bot curl -f http://localhost:3000 > /dev/null 2>&1; then
             echo "✅ Bot service is accessible"
           else
             echo "⚠️  Bot service may not be fully ready yet (this is normal during startup)"
