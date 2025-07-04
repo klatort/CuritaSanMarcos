@@ -1,11 +1,11 @@
 const { createBot, createProvider, createFlow } = require('@bot-whatsapp/bot')
 const QRPortalWeb = require('@bot-whatsapp/portal')
 const BaileysProvider = require('@bot-whatsapp/provider/baileys')
-// Esto me ayudo: npm install @bot-whatsapp/database@latest
-// https://chatgpt.com/share/67cd1fbd-eae0-800c-bd4b-f78c41c13c1c
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
 require('dotenv').config()
 const path = require('path')
+const fs = require('fs')
+const qrcode = require('qrcode-terminal')
 
 /**
  * Obtenemos las variables de entorno para la conexión MySQL
@@ -47,7 +47,27 @@ const main = async () => {
             // flowVerCitas
         ])
         const adapterProvider = createProvider(BaileysProvider, {
-          sessionDir: SESSION_DIR
+            sessionDir: SESSION_DIR,
+            qrMobileUrl: true,
+            // Add custom QR handling
+            customQrHandler: async (qrCode) => {
+                console.log('\n\n🔄 Nuevo código QR generado! 🔄\n');
+                
+                // Display QR in console
+                qrcode.generate(qrCode, { small: true });
+                
+                // Also save to file for debugging
+                try {
+                    const qrPath = path.join(SESSION_DIR, 'latest-qr.txt');
+                    fs.writeFileSync(qrPath, qrCode);
+                    console.log(`✅ QR code text saved to ${qrPath}`);
+                } catch (err) {
+                    console.log('❌ Error saving QR code to file:', err);
+                }
+                
+                console.log('\n📱 Escanea el código QR con WhatsApp');
+                console.log(`🌐 O visita http://localhost:3000 en tu navegador\n`);
+            }
         })
 
         createBot({
@@ -59,12 +79,21 @@ const main = async () => {
         // Configurar el portal web con opciones para mayor accesibilidad
         const portalOptions = { 
             port: 3000, 
-            host: '0.0.0.0' // Permite acceso desde cualquier IP
+            host: '0.0.0.0',
+            qrOptions: {
+                scale: 10,           // Higher scale for better visibility
+                margin: 4,           // Margin around the QR
+                color: {
+                    dark: '#000000', // QR dark color
+                    light: '#ffffff' // QR light color
+                }
+            }
         }
         
-        // Iniciar el portal web
-        console.log('⚡ Iniciando portal web para QR en http://localhost:3000')
-        QRPortalWeb(portalOptions)
+        console.log('⚡ Iniciando portal web para QR en http://localhost:3000');
+        console.log('⚠️ Si el QR no aparece en la web, revisa los logs del contenedor');
+        
+        QRPortalWeb(portalOptions);
     } catch (error) {
         console.error('Error en la función main:', error)
     }
