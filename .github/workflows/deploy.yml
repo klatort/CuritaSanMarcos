@@ -45,11 +45,11 @@ jobs:
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           cd ${{ secrets.SERVER_PATH }}
           # Pull latest images
-          docker-compose pull
+          docker compose pull
           # Stop existing containers
-          docker-compose down
+          docker compose down
           # Build and start services
-          docker-compose up -d --build
+          docker compose up -d --build
           # Clean up unused images
           docker image prune -f
         EOF
