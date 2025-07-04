@@ -8,7 +8,8 @@ services:
     container_name: curita-bot
     restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       - MYSQL_DB_HOST=mysql
       - MYSQL_DB_USER=${MYSQL_DB_USER}
@@ -18,9 +19,6 @@ services:
       - NODE_ENV=production
     volumes:
       - ./bot_sessions:/app/bot_sessions
-      - ./Imagenes:/app/Imagenes
-      - ./:/app
-      - /app/node_modules
     networks:
       - curita-network
     ports:
@@ -46,7 +44,12 @@ services:
       - no-new-privileges:true
     networks:
       - curita-network
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=200 --wait-timeout=28800
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mysql-data:
