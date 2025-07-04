@@ -22,6 +22,8 @@
         "dotenv": "^17.0.1",
         "mysql": "^2.18.1",
         "mysql2": "^2.3.3",
+        "qrcode": "^1.5.4",
+        "qrcode-terminal": "^0.12.0",
         "wa-sticker-formatter": "^1.6.0"
     },
     "devDependencies": {
