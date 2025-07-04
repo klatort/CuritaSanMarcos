@@ -22,9 +22,11 @@ RUN npm i
 COPY . .
 
 # Crear directorios necesarios y establecer permisos
+# Este directorio será sobrescrito por el volumen, pero aseguramos que exista y tenga permisos correctos
 RUN mkdir -p bot_sessions && \
     chmod -R 777 /app/bot_sessions && \
     chown -R node:node /app && \
+    chown -R node:node /app/bot_sessions && \
     # Crear un archivo baileys_store.json vacío con los permisos adecuados
     echo "{}" > /app/bot_sessions/baileys_store.json && \
     chmod 777 /app/bot_sessions/baileys_store.json && \

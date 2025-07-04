@@ -21,8 +21,8 @@ services:
       - MYSQL_DB_PORT=3306
       - NODE_ENV=production
     volumes:
-      - ./bot_sessions:/app/bot_sessions:rw
-    # Aseguramos que el directorio montado tenga los permisos correctos
+      - bot-sessions:/app/bot_sessions
+    # Utilizamos init: true para mejor manejo de procesos
     init: true
     networks:
       - curita-network
@@ -60,6 +60,8 @@ services:
 
 volumes:
   mysql-data:
+    driver: local
+  bot-sessions:
     driver: local
 
 networks:

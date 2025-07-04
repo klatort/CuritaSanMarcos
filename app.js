@@ -19,9 +19,34 @@ const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 
 // Asegurar que el directorio para las sesiones del bot existe
 const ensureDirectoryExists = (directory) => {
-    if (!fs.existsSync(directory)) {
-        fs.mkdirSync(directory, { recursive: true });
-        console.log(`Directorio creado: ${directory}`);
+    try {
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
+            console.log(`Directorio creado: ${directory}`);
+        }
+        
+        // Verificar que el archivo baileys_store.json existe y tiene permisos correctos
+        const storeFile = `${directory}/baileys_store.json`;
+        if (!fs.existsSync(storeFile)) {
+            console.log(`Creando archivo ${storeFile}`);
+            fs.writeFileSync(storeFile, '{}');
+        }
+        
+        // Verificar permisos intentando escribir en el archivo
+        try {
+            fs.accessSync(storeFile, fs.constants.W_OK);
+            console.log(`✅ Permisos de escritura verificados para ${storeFile}`);
+        } catch (error) {
+            console.error(`⚠️ El archivo ${storeFile} no tiene permisos de escritura. Intentando corregir...`);
+            try {
+                fs.chmodSync(storeFile, 0o666);
+                console.log(`✅ Permisos corregidos para ${storeFile}`);
+            } catch (chmodError) {
+                console.error(`❌ No se pudieron corregir los permisos: ${chmodError.message}`);
+            }
+        }
+    } catch (error) {
+        console.error(`❌ Error al verificar/crear el directorio ${directory}:`, error.message);
     }
 };
 
@@ -50,10 +75,12 @@ const main = async () => {
                 return adapterDB;
             } catch (err) {
                 if (retries === 0) {
-                    throw new Error('No se pudo conectar a MySQL después de varios intentos');
+                    console.error('❌ Error fatal: No se pudo conectar a MySQL después de varios intentos:', err.message);
+                    process.exit(1); // Salir con código de error
                 }
                 
-                console.log(`Error al conectar a MySQL. Reintentando en ${delay/1000} segundos... (${retries} intentos restantes)`);
+                console.log(`⚠️ Error al conectar a MySQL. Reintentando en ${delay/1000} segundos... (${retries} intentos restantes)`);
+                console.error('Detalles del error:', err.message);
                 await new Promise(resolve => setTimeout(resolve, delay));
                 return connectWithRetry(retries - 1, delay);
             }
