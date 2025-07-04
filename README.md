@@ -61,3 +61,16 @@ Si prefieres ejecutar el proyecto localmente sin Docker:
 - `bd/` - Scripts SQL y datos
 - `Imagenes/` - Recursos visuales del bot
 - `bot_sessions/` - Datos de sesión (generados automáticamente)
+- `.github/workflows/` - Configuración de GitHub Actions para despliegue automatizado
+
+## Despliegue Automatizado
+
+Este proyecto incluye un workflow de GitHub Actions que automatiza el despliegue a un servidor privado. El workflow:
+
+- Se ejecuta automáticamente en pushes a la rama `main`
+- Puede ejecutarse manualmente desde la pestaña Actions
+- Copia archivos al servidor excluyendo `node_modules`, `bot_sessions` y `.env`
+- Despliega usando docker-compose
+- Verifica que el despliegue sea exitoso
+
+Para configurar el despliegue, consulta `.github/workflows/README.md` para obtener información detallada sobre los secretos requeridos y la configuración del servidor.
