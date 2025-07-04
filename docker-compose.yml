@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - UID=1000
+        - GID=1000
     container_name: curita-bot
     restart: unless-stopped
     depends_on:
@@ -18,7 +21,9 @@ services:
       - MYSQL_DB_PORT=3306
       - NODE_ENV=production
     volumes:
-      - ./bot_sessions:/app/bot_sessions
+      - ./bot_sessions:/app/bot_sessions:rw
+    # Aseguramos que el directorio montado tenga los permisos correctos
+    init: true
     networks:
       - curita-network
     ports:
