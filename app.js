@@ -63,15 +63,28 @@ const main = async () => {
         console.log('Conexión a MySQL establecida correctamente');
         
         const adapterFlow = createFlow([])
-        const adapterProvider = createProvider(BaileysProvider)
+
+        // Crear el proveedor sin opciones personalizadas
+        const adapterProvider = createProvider(BaileysProvider);
 
         createBot({
             flow: adapterFlow,
             provider: adapterProvider,
             database: adapterDB, // Ahora usa MySQL en lugar de MockAdapter
-        })
+        });
 
-        QRPortalWeb()
+        // Configurar el portal web con opciones para mayor accesibilidad
+        const portalOptions = { 
+            port: 3000, 
+            host: '0.0.0.0', // Permite acceso desde cualquier IP
+            qr: { 
+                format: 'svg' // Formato SVG para mejor visualización
+            } 
+        };
+        
+        // Iniciar el portal web
+        console.log('⚡ Iniciando portal web para QR en http://localhost:3000');
+        QRPortalWeb(portalOptions)
     } catch (error) {
         console.error('Error en la función main:', error)
     }
