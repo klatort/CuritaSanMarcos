@@ -27,7 +27,7 @@ services:
       - no-new-privileges:true
 
   mysql:
-    image: mysql:8
+    image: mysql:8.0
     container_name: curita-mysql
     restart: unless-stopped
     environment:
@@ -35,18 +35,20 @@ services:
       - MYSQL_DATABASE=${MYSQL_DB_NAME}
       - MYSQL_USER=${MYSQL_DB_USER}
       - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=no
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./bd/script.sql:/docker-entrypoint-initdb.d/script.sql:ro
+      - ./bd/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./bd/script.sql:/docker-entrypoint-initdb.d/02-script.sql:ro
     ports:
       - "127.0.0.1:3307:3306"
     security_opt:
       - no-new-privileges:true
     networks:
       - curita-network
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=200 --wait-timeout=28800
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=200 --wait-timeout=28800
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--user=root", "--password=${MYSQL_DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
