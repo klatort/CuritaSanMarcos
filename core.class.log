@@ -1,0 +1,136 @@
+[handleMsg]:  {
+  key: {
+    remoteJid: '51960777974@s.whatsapp.net',
+    fromMe: false,
+    id: '0DA56DA501B0133D0B7DCCA9B6444BD1',
+    participant: undefined
+  },
+  messageTimestamp: 1751976605,
+  pushName: '✨',
+  broadcast: false,
+  message: Message {
+    conversation: 'Hola',
+    messageContextInfo: MessageContextInfo {
+      deviceListMetadata: [DeviceListMetadata],
+      deviceListMetadataVersion: 2,
+      messageSecret: [Uint8Array]
+    }
+  },
+  body: 'Hola',
+  from: '51960777974'
+}
+[handleMsg]:  {
+  key: {
+    remoteJid: '51960777974@s.whatsapp.net',
+    fromMe: false,
+    id: '74A52F7F0ACB9083555388B880C85FE6',
+    participant: undefined
+  },
+  messageTimestamp: 1751976705,
+  pushName: '✨',
+  broadcast: false,
+  message: Message {
+    conversation: 'Hola',
+    messageContextInfo: MessageContextInfo {
+      deviceListMetadata: [DeviceListMetadata],
+      deviceListMetadataVersion: 2,
+      messageSecret: [Uint8Array]
+    }
+  },
+  status: 4,
+  body: 'Hola',
+  from: '51960777974'
+}
+[QUEUE_SE_ENVIO]:  {
+  ref: 'ans_6af64321-0033-4aaa-b723-b8d11b154ab5',
+  keyword: 'key_a9715e62-2b1d-4dad-8eca-5bd98fd70427',
+  answer: '__call_action__',
+  options: {
+    media: null,
+    buttons: [],
+    capture: false,
+    child: null,
+    delay: 0,
+    idle: null,
+    ref: null,
+    nested: [],
+    keyword: {},
+    callback: true
+  },
+  refSerialize: '9640d8c23d7829f3b371584ed751a28f'
+}
+[QUEUE_SE_ENVIO]:  {
+  ref: 'ans_5d497bca-5f05-43fd-a4de-5aac347db777',
+  keyword: 'ans_e89ed8fa-d772-4abf-8347-aae24eb4d7c9',
+  answer: 'Escriba su correo de paciente para iniciar ✉️',
+  options: {
+    media: null,
+    buttons: [],
+    capture: true,
+    child: null,
+    delay: 0,
+    idle: null,
+    ref: null,
+    nested: [],
+    keyword: {},
+    callback: true
+  },
+  refSerialize: 'a2f816afc2dbecb3eee8c7a967ca54f4'
+}
+[QUEUE_SE_ENVIO]:  {
+  ref: 'ans_6af64321-0033-4aaa-b723-b8d11b154ab5',
+  keyword: 'key_a9715e62-2b1d-4dad-8eca-5bd98fd70427',
+  answer: '__call_action__',
+  options: {
+    media: null,
+    buttons: [],
+    capture: false,
+    child: null,
+    delay: 0,
+    idle: null,
+    ref: null,
+    nested: [],
+    keyword: {},
+    callback: true
+  },
+  refSerialize: '9640d8c23d7829f3b371584ed751a28f'
+}
+[QUEUE_SE_ENVIO]:  {
+  ref: 'ans_e89ed8fa-d772-4abf-8347-aae24eb4d7c9',
+  keyword: 'ans_db28885b-2170-4d27-a2f9-e48c901bc2a3',
+  answer: '🙋‍♀️ Y estoy dispuesto a ayudarte con tus citas en la Clínica San Marcos 🙋‍♂️',
+  options: {
+    media: 'C:\\Users\\TOSHIBA\\Documents\\appwsp\\Imagenes\\clinica.png',
+    buttons: [],
+    capture: false,
+    child: null,
+    delay: 0,
+    idle: null,
+    ref: null,
+    nested: [],
+    keyword: {},
+    callback: false
+  },
+  refSerialize: 'ba9249312fd4a1b7dd2f8189bbedde13'
+}
+[handleMsg]:  {
+  key: {
+    remoteJid: '51960777974@s.whatsapp.net',
+    fromMe: false,
+    id: '34BB7EB3FB7A0E3A6FE1A3A56B94AB5C',
+    participant: undefined
+  },
+  messageTimestamp: 1751977199,
+  pushName: '✨',
+  broadcast: false,
+  message: Message {
+    conversation: 'Medio lento tu bot',
+    messageContextInfo: MessageContextInfo {
+      deviceListMetadata: [DeviceListMetadata],
+      deviceListMetadataVersion: 2,
+      messageSecret: [Uint8Array]
+    }
+  },
+  body: 'Medio lento tu bot',
+  from: '51960777974'
+}
