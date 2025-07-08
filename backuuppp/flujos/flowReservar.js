@@ -170,23 +170,3 @@ const flowReservar = addKeyword(EVENTS.ACTION)
     )
 
 module.exports = flowReservar
-
-/* Test wrapper added automatically */
-if (typeof module.exports === 'object') {
-  const __flowObj = module.exports;
-  /** Ejecutable para pruebas unitarias */
-  const __runner = async (ctx = {}, tools = {}) => {
-    if (typeof __flowObj.fn === 'function') {
-      return __flowObj.fn(ctx, tools);
-    }
-    if (typeof __flowObj.handle === 'function') {
-      return __flowObj.handle(ctx, tools);
-    }
-    if (typeof __flowObj.run === 'function') {
-      return __flowObj.run(ctx, tools);
-    }
-    // Si no hay función ejecutable expuesta, no hacemos nada.
-  };
-  module.exports = __runner;
-  module.exports.flow = __flowObj;
-}
