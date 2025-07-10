@@ -6,7 +6,6 @@ const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
 const http = require('http')
 require('dotenv').config()
-const path = require('path')
 
 /**
  * Obtenemos las variables de entorno para la conexión MySQL
@@ -16,6 +15,7 @@ const MYSQL_DB_USER = process.env.MYSQL_DB_USER
 const MYSQL_DB_PASSWORD = process.env.MYSQL_DB_PASSWORD
 const MYSQL_DB_NAME = process.env.MYSQL_DB_NAME
 const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
+
 
 const flowSaludar = require('./flujos/flowSaludar')
 const flowWelcome = require('./flujos/flowWelcome')
