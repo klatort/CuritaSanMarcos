@@ -76,26 +76,25 @@ const main = async () => {
             console.error('❌ Error de autenticación:', error)
         })
 
-        createBot({
+        const { handleCtx, httpServer } = await createBot({
             flow: adapterFlow,
             provider: adapterProvider,
             database: adapterDB, // Ahora usa MySQL en lugar de MockAdapter
         })
 
-        // Configurar el portal web con opciones para mayor accesibilidad
-        const portalOptions = { 
-            port: 3000, 
-            host: '0.0.0.0' // Permite acceso desde cualquier IP
-        }
-        
-        // Iniciar el portal web
-        console.log('⚡ Iniciando portal web para QR en http://localhost:3000')
-        QRPortalWeb(portalOptions)
+        // The QR code will be automatically served by the provider at:
+        // http://localhost:3000/qr.png or http://localhost:3000/
+        console.log('⚡ Bot iniciado')
+        console.log('📱 Para conectar WhatsApp, ve a: http://localhost:3000')
+        console.log('🔍 El código QR se actualizará automáticamente cada minuto')
 
         // Start health check server on port 3001
         healthServer.listen(3001, '0.0.0.0', () => {
             console.log('🏥 Health check server running on port 3001')
         })
+
+        // Start the HTTP server - this serves the QR code
+        httpServer(3000)
     } catch (error) {
         console.error('Error en la función main:', error)
     }
