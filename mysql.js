@@ -1,27 +1,21 @@
-/*const mysqlConsultas = require('mysql2')
-const connection = mysqlConsultas.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '4819508Mysql.',
-  database: 'curitasanmarcos'
-});
 
-connection.connect((err)=>{
-  if(err) throw err
-  console.log('Conexion establecida exitosamente!')
-});
+/*
 
-connection.query('Select * from medicos', (err, rows)=> {
-    if(err) throw err
-    console.log('Los datos solicitados son:')
-    console.log(rows)
-  })
+Se establece la conexión de la aplicación Node.js con la base de datos MySQL
+El objeto connection se exporta a fin de que pueda ser reutilizado en otras partes de la aplicación.
 
-connection.end()
+A fin de realizar una consulta:
 */
 
 require('dotenv').config()
 const mysqlConsultas = require('mysql2')
+const connection = mysqlConsultas.createConnection({
+  host: process.env.MYSQL_DB_HOST,
+  user: process.env.MYSQL_DB_USER,
+  password: process.env.MYSQL_DB_PASSWORD,
+  database: process.env.MYSQL_DB_NAME
+});
+
 
 // Only establish connection if environment variables are properly set
 const canConnect = process.env.MYSQL_DB_HOST && 
