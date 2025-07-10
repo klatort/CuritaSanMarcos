@@ -77,9 +77,6 @@ jspm_packages/
 # Optional eslint cache
 .eslintcache
 
-# Docker
-.dockerignore
-
 # Sensitive configuration files
 config.json
 credentials.json

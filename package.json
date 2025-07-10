@@ -21,7 +21,6 @@
         "date-fns": "^4.1.0",
         "mysql": "^2.18.1",
         "mysql2": "^2.3.3",
-        "qrcode": "^1.5.3",
         "wa-sticker-formatter": "^1.6.0"
     },
     "devDependencies": {
