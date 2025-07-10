@@ -5,6 +5,7 @@ const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 // https://chatgpt.com/share/67cd1fbd-eae0-800c-bd4b-f78c41c13c1c
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
 require('dotenv').config()
+const path = require('path')
 
 /**
  * Obtenemos las variables de entorno para la conexión MySQL
@@ -15,6 +16,7 @@ const MYSQL_DB_PASSWORD = process.env.MYSQL_DB_PASSWORD
 const MYSQL_DB_NAME = process.env.MYSQL_DB_NAME
 const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 
+const SESSION_DIR = path.join('/tmp', 'bot_sessions'); // Use /tmp which typically has universal write permissions
 
 const flowSaludar = require('./flujos/flowSaludar')
 const flowWelcome = require('./flujos/flowWelcome')
@@ -44,7 +46,9 @@ const main = async () => {
             // flowReservar, 
             // flowVerCitas
         ])
-        const adapterProvider = createProvider(BaileysProvider)
+        const adapterProvider = createProvider(BaileysProvider, {
+          sessionDir: SESSION_DIR
+        })
 
         createBot({
             flow: adapterFlow,
@@ -52,7 +56,15 @@ const main = async () => {
             database: adapterDB, // Ahora usa MySQL en lugar de MockAdapter
         })
 
-        QRPortalWeb()
+        // Configurar el portal web con opciones para mayor accesibilidad
+        const portalOptions = { 
+            port: 3000, 
+            host: '0.0.0.0' // Permite acceso desde cualquier IP
+        }
+        
+        // Iniciar el portal web
+        console.log('⚡ Iniciando portal web para QR en http://localhost:3000')
+        QRPortalWeb(portalOptions)
     } catch (error) {
         console.error('Error en la función main:', error)
     }

@@ -2,7 +2,7 @@
 const connection = mysqlConsultas.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '4819508Mysql.',
+  password: '********', // Password removed for security
   database: 'curitasanmarcos'
 });
 
@@ -22,16 +22,41 @@ connection.end()
 
 require('dotenv').config()
 const mysqlConsultas = require('mysql2')
-const connection = mysqlConsultas.createConnection({
-  host: process.env.MYSQL_DB_HOST,
-  user: process.env.MYSQL_DB_USER,
-  password: process.env.MYSQL_DB_PASSWORD,
-  database: process.env.MYSQL_DB_NAME
-});
 
-connection.connect((err) => {
-  if (err) throw err
-  console.log('Conexion establecida exitosamente!')
-});
+// Función para intentar conectar con reintentos
+let connectionAttempts = 0;
+const MAX_RETRIES = 5;
 
-module.exports = connection
+function createConnection() {
+  console.log(`Intento de conexión a MySQL #${connectionAttempts + 1}...`);
+  
+  // Crear conexión simple para facilitar la depuración
+  const connection = mysqlConsultas.createConnection({
+    host: process.env.MYSQL_DB_HOST,
+    user: process.env.MYSQL_DB_USER,
+    password: process.env.MYSQL_DB_PASSWORD,
+    database: process.env.MYSQL_DB_NAME,
+    port: process.env.MYSQL_DB_PORT || 3306,
+    connectTimeout: 20000,
+  });
+
+  // Manejar eventos de error y reconexión
+  connection.on('error', function(err) {
+    console.error('Error de MySQL:', err.message);
+    
+    // Si perdimos la conexión, intentar reconectar
+    if (err.code === 'PROTOCOL_CONNECTION_LOST' && connectionAttempts < MAX_RETRIES) {
+      connectionAttempts++;
+      console.log(`Reconectando (${connectionAttempts}/${MAX_RETRIES})...`);
+      setTimeout(createConnection, 2000); // Esperar 2 segundos antes de reconectar
+    }
+  });
+
+  return connection;
+}
+
+// Crear la conexión
+const connection = createConnection();
+
+// Exportar la conexión
+module.exports = connection;

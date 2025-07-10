@@ -79,6 +79,9 @@ jspm_packages/
 
 # Docker
 .dockerignore
+# No ignorar estos archivos importantes de Docker
+!Dockerfile
+!docker-compose.yml
 
 # Sensitive configuration files
 config.json
@@ -88,6 +91,19 @@ credentials.json
 # Uncomment the next line if images should not be tracked
 # Imagenes/
 
-# Database backups
+# Database files and data
 *.sql.backup
 *.dump
+bd/*.csv
+# Don't exclude schema files that set up the database structure
+# bd/schema*.sql 
+
+# WhatsApp chat media files
+media/
+chat_media/
+received_media/
+*.opus
+*.ogg
+*.mp3
+*.mp4
+*.webp
