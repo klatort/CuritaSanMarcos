@@ -54,7 +54,74 @@ Si prefieres ejecutar el proyecto localmente sin Docker:
    npm start
    ```
 
-## Configuración con Docker
+## Portal QR Code Mejorado
+
+### Problema Identificado y Solución
+
+El problema principal era que el portal web del QR code mostraba una imagen placeholder en lugar del código QR real. Esto ocurría porque:
+
+1. **Generación del QR**: El provider de Baileys no estaba generando el archivo QR en la ubicación correcta
+2. **Servicio del QR**: El servidor HTTP no estaba sirviendo el archivo QR correctamente
+3. **Configuración para producción**: Las URLs estaban hardcodeadas para `localhost`
+
+### Solución Implementada
+
+**1. Generación manual del QR code:**
+- Agregada dependencia `qrcode` al proyecto
+- Implementado listener del evento `qr` que genera el archivo `bot.qr.png`
+- El QR se guarda en el directorio raíz del proyecto
+
+**2. Servidor HTTP personalizado:**
+- Implementado manejo de rutas para servir el QR code
+- Página principal con interfaz mejorada (`http://localhost:3000/`)
+- Ruta directa al QR (`http://localhost:3000/qr.png`)
+- Auto-refresh cada 30 segundos para QR codes nuevos
+
+**3. Configuración flexible para producción:**
+- Variables de entorno para `SERVER_IP` y `SERVER_DOMAIN`
+- URLs dinámicas basadas en la configuración
+- Soporte para HTTPS en producción
+
+### Nuevas Características del Portal QR
+
+- **Interfaz mejorada**: Página web con diseño moderno y responsive
+- **Auto-refresh**: El QR se actualiza automáticamente cada 30 segundos
+- **Fallback inteligente**: Si no hay QR disponible, muestra mensaje de "generando..."
+- **Botón de actualización manual**: Para refrescar el QR cuando sea necesario
+- **Instrucciones claras**: Guía al usuario sobre cómo usar el QR
+
+### Acceso al Portal QR
+
+1. **Desarrollo local**: `http://localhost:3000`
+2. **Producción**: `http://YOUR_SERVER_IP:3000` o `https://YOUR_DOMAIN`
+3. **QR directo**: Agrega `/qr.png` a cualquiera de las URLs anteriores
+
+### Variables de Entorno Actualizadas
+
+```env
+# Server Configuration
+SERVER_HOST=0.0.0.0          # Host del servidor (0.0.0.0 para Docker)
+SERVER_IP=YOUR_SERVER_IP     # IP pública del servidor
+SERVER_DOMAIN=YOUR_DOMAIN    # Dominio si tienes uno configurado
+PORT=3000                    # Puerto principal
+HEALTH_PORT=3001             # Puerto para health check
+```
+
+### Comandos de Verificación
+
+```bash
+# Verificar que el QR se genera correctamente
+ls -la bot.qr.png
+
+# Verificar que el servidor está funcionando
+curl http://localhost:3000
+
+# Verificar que el QR se sirve correctamente
+curl -I http://localhost:3000/qr.png
+
+# Verificar health check
+curl http://localhost:3001/health
+```
 
 ### Dockerfile Mejorado
 
