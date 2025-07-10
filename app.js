@@ -39,10 +39,10 @@ const healthServer = http.createServer((req, res) => {
 
 const flowSaludar = require('./flujos/flowSaludar')
 const flowWelcome = require('./flujos/flowWelcome')
-// const flowVerCitas = require('./flujos/flowVerCitas')
-// const flowReservar = require('./flujos/flowReservar')
-// const flowConsultas = require('./flujos/flowConsultas')
-// const menuFlow = require('./flujos/menuFlow')
+const flowVerCitas = require('./flujos/flowVerCitas')
+const flowReservar = require('./flujos/flowReservar')
+const flowConsultas = require('./flujos/flowConsultas')
+const menuFlow = require('./flujos/menuFlow')
 
 
 
@@ -81,10 +81,10 @@ const main = async () => {
         const adapterFlow = createFlow([
             flowSaludar, 
             flowWelcome
-            // menuFlow, 
-            // flowConsultas, 
-            // flowReservar, 
-            // flowVerCitas
+            menuFlow, 
+            flowConsultas, 
+            flowReservar, 
+            flowVerCitas
         ])
         
         // Simplified Baileys configuration - removing experimental options that may cause issues
