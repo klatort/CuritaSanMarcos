@@ -38,5 +38,3 @@ class SistemaExpertoMedico {
 const sistema = new SistemaExpertoMedico();
 const resultado = sistema.recomendarEspecialidad(sintomasUsuario);
 console.log("Debe acudir a: ", resultado.join(", "));
-
-module.exports = SistemaExpertoMedico;

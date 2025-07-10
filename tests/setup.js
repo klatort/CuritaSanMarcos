@@ -1,23 +1,15 @@
-
-/**
- * Jest global setup: Mock MySQL and other heavy deps.
- */
-jest.mock('mysql2', () => ({
-  createConnection: () => ({
-    query: jest.fn().mockResolvedValue([]),
-    on:    jest.fn(),
-  }),
-}));
-
+// tests/setup.js
+// Ajusta variables de entorno para que no toquen tu BD de prod
 jest.mock('mysql2/promise', () => ({
   createPool: () => ({
-    query: jest.fn().mockResolvedValue([[], []]),
-    end:   jest.fn(),
+    query: jest.fn().mockResolvedValue([]),
+    end:   jest.fn().mockResolvedValue(),
   }),
 }));
 
-// Ensure iconv-lite knows about cesu8 to silence mysql2 parser
-require('iconv-lite/encodings');
+// 2) Registramos codecs de iconv-lite (cede à cesu8, evita ese error)
+require('iconv-lite').encodingExists('cesu8') ||
+  require('iconv-lite/encodings');
 
-// Silence console.error in tests to keep output clean
+// 3) Silenciamos console.error
 jest.spyOn(console, 'error').mockImplementation(() => {});

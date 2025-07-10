@@ -14,11 +14,7 @@ const chat = require('../../gemini');
 
 describe('gemini.js', () => {
   it('debe devolver el texto cuando todo va bien', async () => {
-    
-    jest.resetModules();
-    const chatError = require('../../gemini');
-    const res = await chatError('prompt', 'texto');
-
+    const res = await chat('prompt', 'texto');
     expect(res).toBe('respuesta simulada');
   });
 
@@ -30,11 +26,7 @@ describe('gemini.js', () => {
         generateContent: () => { throw new Error('boom'); }
       }),
     }));
-    
-    jest.resetModules();
-    const chatError = require('../../gemini');
-    const res = await chatError('prompt', 'texto');
-
+    const res = await chat('prompt', 'texto');
     expect(res).toBe('ERROR');
   });
 });

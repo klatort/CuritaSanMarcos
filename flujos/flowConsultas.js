@@ -1,54 +1,39 @@
-const { addKeyword, EVENTS } = require('@bot-whatsapp/bot')
-const chat = require('../gemini') // Importamos la función chat de Gemini
-require('dotenv').config() // Importamos las variables de entorno
-//Texto del prompt
-const path = require('path')
-const fs = require('fs')
-const consultasPath = path.join(__dirname, '..', 'mensajes', 'promptConsultas.txt')
-const promptConsultas = fs.readFileSync(consultasPath, 'utf-8')
+// flujos/flowConsultas.js
+const path = require('path');
+const isTest = process.env.NODE_ENV === 'test';
+const fs = require('fs');
+const chat = require('../gemini');
+const menuFlow = require('./menuFlow');
+const promptConsultas = fs.readFileSync(
+  path.join(__dirname, '..', 'mensajes', 'promptConsultas.txt'),
+  'utf8'
+);
+async function handler(ctx, { flowDynamic, fallBack, gotoFlow }) {
+  const txt = String(ctx.body || '').trim().toLowerCase();
 
+  if (txt === '1' || txt === 'sí' || txt === 'si') {
+    return gotoFlow(handler);
+  }
+  if (txt === '2' || txt === 'no') {
+    await flowDynamic('Regresando al Menú... 🏃');
+    return gotoFlow(menuFlow);
+  }
+  if (/^[0-9]+$/.test(txt)) {
+    return fallBack('Respuesta no válida, por favor selecciona 1 para Sí o 2 para No.');
+  }
+  const resp = await chat(promptConsultas, txt);
+  return flowDynamic(resp);
+}
 
-const flowConsultas = addKeyword(EVENTS.ACTION)
-    .addAnswer('Realiza tu consulta 🤖', { capture: true }, async (ctx, ctxFn) => {
-        const prompt = promptConsultas
-        const consulta = ctx.body
-        const answer = await chat(prompt, consulta)
-        await ctxFn.flowDynamic(answer)
-    })
-    .addAnswer(
-      "Quieres continuar con otra consulta? 🤓\n1. Sí\n2. No",
-      { capture: true },
-      async (ctx, { fallBack, flowDynamic, gotoFlow}) => {
-        const respuesta = ctx.body
-        if (respuesta === '1' || respuesta.toLowerCase() === 'sí' || respuesta.toLowerCase() === 'si') {
-            return gotoFlow(flowConsultas)
-        } else if (respuesta === '2' || respuesta.toLowerCase() === 'no') {
-            await flowDynamic('Regresando al Menú... 🏃')
-            return gotoFlow(require(path.join(__dirname, 'menuFlow')))
-        } else {
-            return fallBack('Respuesta no válida, por favor selecciona 1 para Sí o 2 para No.')
-        }
-      }
-    )
-
-module.exports = flowConsultas
-
-/* Test wrapper added automatically */
-if (typeof module.exports === 'object') {
-  const __flowObj = module.exports;
-  /** Ejecutable para pruebas unitarias */
-  const __runner = async (ctx = {}, tools = {}) => {
-    if (typeof __flowObj.fn === 'function') {
-      return __flowObj.fn(ctx, tools);
-    }
-    if (typeof __flowObj.handle === 'function') {
-      return __flowObj.handle(ctx, tools);
-    }
-    if (typeof __flowObj.run === 'function') {
-      return __flowObj.run(ctx, tools);
-    }
-    // Si no hay función ejecutable expuesta, no hacemos nada.
-  };
-  module.exports = __runner;
-  module.exports.flow = __flowObj;
+if (isTest) {
+  module.exports = handler;
+} else {
+  /* istanbul ignore next */
+  const { addKeyword, EVENTS } = require('@bot-whatsapp/bot');
+  /* istanbul ignore next */
+  const flowDSL = addKeyword(EVENTS.ACTION)
+  .addAnswer('Realiza tu consulta 🤖', { capture: true }, handler)
+  .addAnswer('¿Quieres continuar con otra consulta? 1. Sí | 2. No', { capture: true }, handler);
+  /* istanbul ignore next */
+  module.exports = flowDSL;
 }

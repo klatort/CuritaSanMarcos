@@ -5,8 +5,8 @@ jest.mock('fs', () => {
   const fs = jest.requireActual('fs');
   return {
     ...fs,  
-  readFileSync: jest.fn().mockReturnValue('PROMPT_BASE')
-  };
+  readFileSync: jest.fn().mockReturnValue('PROMPT_BASE'),
+};
 });
 
 const flowConsultas = require('../../flujos/flowConsultas');
