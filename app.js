@@ -26,7 +26,7 @@ const SERVER_HOST = process.env.SERVER_HOST || '0.0.0.0'
 const SERVER_IP = process.env.SERVER_IP || 'localhost'
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || null
 
-const SESSION_DIR = path.join('/tmp', 'bot_sessions'); // Use /tmp which typically has universal write permissions
+const SESSION_DIR = path.join(__dirname, 'bot_sessions'); // Use local directory as per BuilderBot docs
 
 // Create simple health check server
 const healthServer = http.createServer((req, res) => {
