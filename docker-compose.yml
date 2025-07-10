@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: curita-bot
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - MYSQL_DB_HOST=mysql
+      - MYSQL_DB_USER=${MYSQL_DB_USER}
+      - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DB_NAME=${MYSQL_DB_NAME}
+      - MYSQL_DB_PORT=3306
+      - NODE_ENV=production
+    volumes:
+      - bot-sessions:/tmp/bot_sessions
+    networks:
+      - curita-network
+    ports:
+      - "3000:3000"  # Web portal QR access
+      - "3001:3001"  # Health check endpoint
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+
+  mysql:
+    image: mysql:8.0
+    container_name: curita-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_USER=${MYSQL_DB_USER}
+      - MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=no
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./bd/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./bd/script.sql:/docker-entrypoint-initdb.d/02-script.sql:ro
+    ports:
+      - "127.0.0.1:3307:3306"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - curita-network
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--user=root", "--password=${MYSQL_DB_PASSWORD}"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  mysql-data:
+    driver: local
+  bot-sessions:
+    driver: local
+
+networks:
+  curita-network:
+    driver: bridge
