@@ -26,8 +26,6 @@ const SERVER_HOST = process.env.SERVER_HOST || '0.0.0.0'
 const SERVER_IP = process.env.SERVER_IP || 'localhost'
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || null
 
-const SESSION_DIR = path.join(__dirname, 'bot_sessions'); // Use local directory as per BuilderBot docs
-
 // Create simple health check server
 const healthServer = http.createServer((req, res) => {
     if (req.url === '/health') {
@@ -68,7 +66,8 @@ const main = async () => {
             // flowVerCitas
         ])
         const adapterProvider = createProvider(BaileysProvider, {
-          sessionDir: SESSION_DIR
+            experimentalStore: true,  // Significantly reduces resource consumption
+            timeRelease: 10800000,    // Cleans up data every 3 hours (in milliseconds)
         })
 
         // Add QR code event handler for better visibility
