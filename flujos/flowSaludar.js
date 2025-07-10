@@ -3,7 +3,9 @@ const path = require('path')
 //Para las querys
 const connection = require('../mysql') // Importamos la conexión a MySQL
 const util = require('util')
-const query = util.promisify(connection.query).bind(connection)
+
+// Only create query function if connection is available
+const query = connection ? util.promisify(connection.query).bind(connection) : null
 
 const flowSaludar = addKeyword(EVENTS.ACTION)
         .addAnswer('🙌 Hola bienvenido, soy el Curita Bot 💊🤖')
@@ -14,6 +16,13 @@ const flowSaludar = addKeyword(EVENTS.ACTION)
             async (ctx, { flowDynamic, fallBack }) => {
                 try {
                     const correo = ctx.body
+
+                    // Check if database connection is available
+                    if (!query) {
+                        await flowDynamic('⚠️ El sistema de base de datos no está disponible en este momento.')
+                        await flowDynamic('Por favor, contacte al administrador o intente más tarde.')
+                        return fallBack('Sistema temporalmente fuera de servicio. Intente más tarde.')
+                    }
 
                     // Realizar la consulta a la base de datos
                     const rows = await query(`
@@ -36,6 +45,13 @@ const flowSaludar = addKeyword(EVENTS.ACTION)
             async (ctx, { flowDynamic, fallBack, gotoFlow}) => {
                 try {
                     const codigo = ctx.body
+
+                    // Check if database connection is available
+                    if (!query) {
+                        await flowDynamic('⚠️ El sistema de base de datos no está disponible en este momento.')
+                        await flowDynamic('Por favor, contacte al administrador o intente más tarde.')
+                        return fallBack('Sistema temporalmente fuera de servicio. Intente más tarde.')
+                    }
 
                     // Realizar la consulta a la base de datos
                     const rows = await query(`

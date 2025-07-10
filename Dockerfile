@@ -1,10 +1,10 @@
-# Use Node.js 18 LTS Alpine for smaller image size
-FROM node:18-alpine AS bot
+# Use Node.js 18 LTS Alpine for better compatibility
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies and create user in optimized layers
+# Install system dependencies and create user
 RUN apk add --no-cache \
     ca-certificates \
     chromium \
@@ -18,31 +18,30 @@ RUN apk add --no-cache \
     ttf-freefont \
     wget \
     && addgroup -g 1001 -S nodejs \
-    && adduser -S builderbot -u 1001 -G nodejs \
-    && rm -rf /var/cache/apk/*
+    && adduser -S builderbot -u 1001 -G nodejs
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy package files and install dependencies
+# Copy package files and install dependencies as root
 COPY package*.json ./
-RUN npm ci --only=production \
-    && npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
 
-# Create session directory with proper permissions
-RUN mkdir -p /tmp/bot_sessions \
-    && chown -R builderbot:nodejs /tmp/bot_sessions \
-    && chmod -R 755 /tmp/bot_sessions
-
-# Copy application code and set ownership
+# Copy application code
 COPY . .
-RUN chown -R builderbot:nodejs /app
+
+# Create directories and set proper permissions
+RUN mkdir -p /app/bot_sessions \
+    && mkdir -p /app/baileys_auth_info \
+    && chown -R builderbot:nodejs /app \
+    && chmod -R 755 /app/bot_sessions \
+    && chmod -R 755 /app/baileys_auth_info
 
 # Switch to non-root user
 USER builderbot
 
-# Expose ports (3000 for web portal, 3001 for health check)
+# Expose ports (3000 for QR portal, 3001 for health check)
 EXPOSE 3000 3001
 
 # Set environment variables
