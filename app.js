@@ -4,6 +4,7 @@ const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 // Esto me ayudo: npm install @bot-whatsapp/database@latest
 // https://chatgpt.com/share/67cd1fbd-eae0-800c-bd4b-f78c41c13c1c
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
+const http = require('http')
 require('dotenv').config()
 const path = require('path')
 
@@ -50,6 +51,20 @@ const main = async () => {
           sessionDir: SESSION_DIR
         })
 
+        // Add QR code event handler for better visibility
+        adapterProvider.on('qr', (qr) => {
+            console.log('📱 Código QR generado. Escanéalo con WhatsApp.')
+            console.log('🌐 También puedes verlo en: http://localhost:3000')
+        })
+
+        adapterProvider.on('ready', () => {
+            console.log('✅ WhatsApp conectado correctamente!')
+        })
+
+        adapterProvider.on('auth_failure', (error) => {
+            console.error('❌ Error de autenticación:', error)
+        })
+
         createBot({
             flow: adapterFlow,
             provider: adapterProvider,
@@ -65,6 +80,11 @@ const main = async () => {
         // Iniciar el portal web
         console.log('⚡ Iniciando portal web para QR en http://localhost:3000')
         QRPortalWeb(portalOptions)
+
+        // Start health check server on port 3001
+        healthServer.listen(3001, '0.0.0.0', () => {
+            console.log('🏥 Health check server running on port 3001')
+        })
     } catch (error) {
         console.error('Error en la función main:', error)
     }

@@ -54,6 +54,68 @@ Si prefieres ejecutar el proyecto localmente sin Docker:
    npm start
    ```
 
+## Configuración con Docker
+
+### Dockerfile Mejorado
+
+El proyecto utiliza un Dockerfile optimizado basado en las mejores prácticas de BuilderBot:
+
+- **Imagen base**: `node:18-alpine` para menor tamaño
+- **Seguridad**: Ejecuta como usuario no-root (`builderbot`)
+- **Dependencias**: Incluye Chromium y dependencias necesarias para WhatsApp Web
+- **Health Check**: Endpoint de salud en el puerto 3001
+- **Optimización**: Capas de imagen minimizadas y cache de npm limpio
+
+### Características del Dockerfile
+
+```dockerfile
+# Optimizaciones implementadas:
+- Imagen Alpine Linux (menor tamaño)
+- Usuario no-root para mayor seguridad
+- Health check integrado
+- Manejo adecuado de señales
+- Dependencias de Chromium pre-instaladas
+- Permisos de directorio configurados correctamente
+```
+
+### Puertos Expuestos
+
+- **3000**: Portal web para código QR
+- **3001**: Endpoint de health check
+- **3306**: MySQL (solo internamente entre contenedores)
+
+### Variables de Entorno
+
+El proyecto utiliza las siguientes variables de entorno:
+
+```env
+MYSQL_DB_HOST=mysql          # Host de la base de datos
+MYSQL_DB_USER=your_user      # Usuario MySQL
+MYSQL_DB_PASSWORD=your_pass  # Contraseña MySQL
+MYSQL_DB_NAME=your_db        # Nombre de la base de datos
+MYSQL_DB_PORT=3306           # Puerto MySQL
+NODE_ENV=production          # Entorno de Node.js
+```
+
+### Comandos Docker Útiles
+
+```bash
+# Construir imagen manualmente
+docker build -t curita-bot .
+
+# Ejecutar contenedor individual
+docker run -p 3000:3000 -p 3001:3001 curita-bot
+
+# Ver logs del contenedor
+docker logs curita-bot
+
+# Acceder al contenedor
+docker exec -it curita-bot sh
+
+# Verificar health check
+curl http://localhost:3001/health
+```
+
 ## Estructura del Proyecto
 
 - `app.js` - Punto de entrada principal
