@@ -21,7 +21,6 @@ const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 /**
  * Variables de configuración del servidor
  */
-const PORT = process.env.PORT || 3000
 const HEALTH_PORT = process.env.HEALTH_PORT || 3001
 const SERVER_HOST = process.env.SERVER_HOST || '0.0.0.0'
 const SERVER_IP = process.env.SERVER_IP || 'localhost'
@@ -62,14 +61,22 @@ const main = async () => {
             }
         }
         
-        // Configurar la base de datos MySQL
-        const adapterDB = new MySQLAdapter({
-            host: MYSQL_DB_HOST,
-            user: MYSQL_DB_USER,
-            database: MYSQL_DB_NAME,
-            password: MYSQL_DB_PASSWORD,
-            port: MYSQL_DB_PORT,
-        })
+        // Configurar la base de datos MySQL con manejo de errores
+        let adapterDB
+        try {
+            adapterDB = new MySQLAdapter({
+                host: MYSQL_DB_HOST,
+                user: MYSQL_DB_USER,
+                database: MYSQL_DB_NAME,
+                password: MYSQL_DB_PASSWORD,
+                port: MYSQL_DB_PORT,
+            })
+        } catch (error) {
+            console.error('❌ Error configurando MySQL adapter:', error)
+            console.log('⚠️ Usando MockAdapter como respaldo')
+            const MockAdapter = require('@bot-whatsapp/database/mock')
+            adapterDB = new MockAdapter()
+        }
 
         const adapterFlow = createFlow([
             flowSaludar, 
@@ -79,9 +86,11 @@ const main = async () => {
             // flowReservar, 
             // flowVerCitas
         ])
+        
+        // Simplified Baileys configuration - removing experimental options that may cause issues
         const adapterProvider = createProvider(BaileysProvider, {
-            experimentalStore: true,  // Significantly reduces resource consumption
-            timeRelease: 10800000,    // Cleans up data every 3 hours (in milliseconds)
+            // Remove experimentalStore and timeRelease as they may cause JSON parsing issues
+            // Use default Baileys configuration for better stability
         })
 
         // Add QR code event handler for better visibility
