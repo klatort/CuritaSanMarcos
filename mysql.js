@@ -23,8 +23,6 @@ const canConnect = process.env.MYSQL_DB_HOST &&
                   process.env.MYSQL_DB_PASSWORD && 
                   process.env.MYSQL_DB_NAME;
 
-let connection;
-
 if (canConnect) {
   connection = mysqlConsultas.createConnection({
     host: process.env.MYSQL_DB_HOST,
