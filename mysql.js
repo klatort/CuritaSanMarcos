@@ -9,14 +9,6 @@ A fin de realizar una consulta:
 
 require('dotenv').config()
 const mysqlConsultas = require('mysql2')
-const connection = mysqlConsultas.createConnection({
-  host: process.env.MYSQL_DB_HOST,
-  user: process.env.MYSQL_DB_USER,
-  password: process.env.MYSQL_DB_PASSWORD,
-  database: process.env.MYSQL_DB_NAME
-});
-
-
 // Only establish connection if environment variables are properly set
 const canConnect = process.env.MYSQL_DB_HOST && 
                   process.env.MYSQL_DB_USER && 
