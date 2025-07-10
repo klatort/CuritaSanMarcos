@@ -3,7 +3,9 @@ const path = require('path')
 //Para las querys
 const connection = require('../mysql') // Importamos la conexión a MySQL
 const util = require('util')
-const query = util.promisify(connection.query).bind(connection)
+
+// Only create query function if connection is available
+const query = connection ? util.promisify(connection.query).bind(connection) : null
 
 const flowSaludar = addKeyword(EVENTS.ACTION)
         .addAnswer('🙌 Hola bienvenido, soy el Curita Bot 💊🤖')
