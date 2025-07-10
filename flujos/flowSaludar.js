@@ -17,6 +17,13 @@ const flowSaludar = addKeyword(EVENTS.ACTION)
                 try {
                     const correo = ctx.body
 
+                    // Check if database connection is available
+                    if (!query) {
+                        await flowDynamic('⚠️ El sistema de base de datos no está disponible en este momento.')
+                        await flowDynamic('Por favor, contacte al administrador o intente más tarde.')
+                        return fallBack('Sistema temporalmente fuera de servicio. Intente más tarde.')
+                    }
+
                     // Realizar la consulta a la base de datos
                     const rows = await query(`
                         SELECT SUBSTRING_INDEX(nombres, ' ', 1) AS primer_nombre
@@ -38,6 +45,13 @@ const flowSaludar = addKeyword(EVENTS.ACTION)
             async (ctx, { flowDynamic, fallBack, gotoFlow}) => {
                 try {
                     const codigo = ctx.body
+
+                    // Check if database connection is available
+                    if (!query) {
+                        await flowDynamic('⚠️ El sistema de base de datos no está disponible en este momento.')
+                        await flowDynamic('Por favor, contacte al administrador o intente más tarde.')
+                        return fallBack('Sistema temporalmente fuera de servicio. Intente más tarde.')
+                    }
 
                     // Realizar la consulta a la base de datos
                     const rows = await query(`
