@@ -5,6 +5,7 @@ const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 // https://chatgpt.com/share/67cd1fbd-eae0-800c-bd4b-f78c41c13c1c
 const MySQLAdapter = require('@bot-whatsapp/database/mysql')
 const http = require('http')
+const path = require('path')
 require('dotenv').config()
 
 /**
@@ -17,6 +18,17 @@ const MYSQL_DB_NAME = process.env.MYSQL_DB_NAME
 const MYSQL_DB_PORT = process.env.MYSQL_DB_PORT
 
 const SESSION_DIR = path.join('/tmp', 'bot_sessions'); // Use /tmp which typically has universal write permissions
+
+// Create simple health check server
+const healthServer = http.createServer((req, res) => {
+    if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ status: 'healthy', timestamp: new Date().toISOString() }))
+    } else {
+        res.writeHead(404)
+        res.end('Not Found')
+    }
+})
 
 const flowSaludar = require('./flujos/flowSaludar')
 const flowWelcome = require('./flujos/flowWelcome')
