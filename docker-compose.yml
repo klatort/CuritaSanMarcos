@@ -27,7 +27,7 @@ services:
     networks:
       - curita-network
     ports:
-      - "3000:3000"  # Web portal QR access
+      - "3000:3000"  # QR Portal Web (BuilderBot default port)
       - "3001:3001"  # Health check endpoint
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
