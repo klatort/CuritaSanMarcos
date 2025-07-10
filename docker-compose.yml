@@ -17,6 +17,11 @@ services:
       - MYSQL_DB_NAME=${MYSQL_DB_NAME}
       - MYSQL_DB_PORT=3306
       - NODE_ENV=production
+      - PORT=3000
+      - HEALTH_PORT=3001
+      - SERVER_HOST=0.0.0.0
+      - SERVER_IP=${SERVER_IP:-localhost}
+      - SERVER_DOMAIN=${SERVER_DOMAIN:-}
     volumes:
       - bot-sessions:/tmp/bot_sessions
     networks:
@@ -25,13 +30,14 @@ services:
       - "3000:3000"  # Web portal QR access
       - "3001:3001"  # Health check endpoint
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 5s
     security_opt:
       - no-new-privileges:true
+    user: "1001:1001"  # Explicitly set user to builderbot
 
   mysql:
     image: mysql:8.0

@@ -4,7 +4,7 @@ FROM node:18-alpine AS bot
 # Set working directory
 WORKDIR /app
 
-# Install dependencies, create user, and set up directories in a single layer
+# Install dependencies and create user in optimized layers
 RUN apk add --no-cache \
     ca-certificates \
     chromium \
@@ -18,26 +18,26 @@ RUN apk add --no-cache \
     ttf-freefont \
     wget \
     && addgroup -g 1001 -S nodejs \
-    && adduser -S builderbot -u 1001 \
-    && mkdir -p /tmp/bot_sessions \
-    && chmod -R 755 /tmp/bot_sessions \
+    && adduser -S builderbot -u 1001 -G nodejs \
     && rm -rf /var/cache/apk/*
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Install dependencies and clean cache
 RUN npm ci --only=production \
-    && npm cache clean --force \
-    && chown -R builderbot:nodejs /app \
-    && chown -R builderbot:nodejs /tmp/bot_sessions
+    && npm cache clean --force
 
-# Copy application code
+# Create session directory with proper permissions
+RUN mkdir -p /tmp/bot_sessions \
+    && chown -R builderbot:nodejs /tmp/bot_sessions \
+    && chmod -R 755 /tmp/bot_sessions
+
+# Copy application code and set ownership
 COPY . .
+RUN chown -R builderbot:nodejs /app
 
 # Switch to non-root user
 USER builderbot
@@ -49,9 +49,9 @@ EXPOSE 3000 3001
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Health check
+# Health check - Use node for better compatibility
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+    CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => { process.exit(1) })" || exit 1
 
 # Use exec form for better signal handling
 CMD ["node", "app.js"]
