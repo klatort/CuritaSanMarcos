@@ -14,7 +14,7 @@ const flowWelcome = addKeyword(EVENTS.WELCOME)
 
         if (userStates[userId].hasWelcomed) {
             await flowDynamic('Regresando al Menú... 🏃')
-            // return gotoFlow(require(path.join(__dirname, 'menuFlow')))
+            return gotoFlow(require(path.join(__dirname, 'menuFlow')))
         }
         
         userStates[userId].hasWelcomed = true
