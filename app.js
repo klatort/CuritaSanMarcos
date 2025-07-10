@@ -80,7 +80,7 @@ const main = async () => {
 
         const adapterFlow = createFlow([
             flowSaludar, 
-            flowWelcome
+            flowWelcome,
             menuFlow, 
             flowConsultas, 
             flowReservar, 
