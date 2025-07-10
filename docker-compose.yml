@@ -23,7 +23,7 @@ services:
       - SERVER_IP=${SERVER_IP:-localhost}
       - SERVER_DOMAIN=${SERVER_DOMAIN:-}
     volumes:
-      - bot-sessions:/tmp/bot_sessions
+      - bot-sessions:/app/bot_sessions:rw  # Following BuilderBot docs pattern
     networks:
       - curita-network
     ports:
@@ -37,7 +37,8 @@ services:
       start_period: 5s
     security_opt:
       - no-new-privileges:true
-    user: "1001:1001"  # Explicitly set user to builderbot
+    cap_add:
+      - SYS_ADMIN  # Required by BuilderBot for proper session handling
 
   mysql:
     image: mysql:8.0

@@ -1,10 +1,14 @@
-# Use Node.js 18 LTS Alpine for smaller image size
-FROM node:18-alpine AS bot
+# Use Node.js 21 LTS Alpine as per BuilderBot documentation
+FROM node:21-alpine3.18 AS builder
+
+# Enable Corepack and prepare for PNPM installation to increase performance
+RUN corepack enable && corepack prepare pnpm@latest --activate
+ENV PNPM_HOME=/usr/local/bin
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies and create user in optimized layers
+# Install system dependencies
 RUN apk add --no-cache \
     ca-certificates \
     chromium \
@@ -16,10 +20,7 @@ RUN apk add --no-cache \
     nss \
     python3 \
     ttf-freefont \
-    wget \
-    && addgroup -g 1001 -S nodejs \
-    && adduser -S builderbot -u 1001 -G nodejs \
-    && rm -rf /var/cache/apk/*
+    wget
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -27,22 +28,15 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm ci --only=production \
-    && npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy application code
+COPY . .
 
 # Create session directory with proper permissions
-RUN mkdir -p /tmp/bot_sessions \
-    && chown -R builderbot:nodejs /tmp/bot_sessions \
-    && chmod -R 755 /tmp/bot_sessions
+RUN mkdir -p /app/bot_sessions && chmod 755 /app/bot_sessions
 
-# Copy application code and set ownership
-COPY . .
-RUN chown -R builderbot:nodejs /app
-
-# Switch to non-root user
-USER builderbot
-
-# Expose ports (3000 for web portal, 3001 for health check)
+# Expose ports (3000 for QR portal, 3001 for health check)
 EXPOSE 3000 3001
 
 # Set environment variables
