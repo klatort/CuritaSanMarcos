@@ -1,0 +1,90 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node.js
+node_modules/
+.npm
+.node_repl_history
+*.tgz
+*.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# WhatsApp Bot Sessions (sensitive authentication data)
+bot_sessions/
+*.json
+!package.json
+!package-lock.json
+
+# QR Code images
+*.qr.png
+bot.qr.png
+
+# Baileys logs
+baileys.log
+core.class.log
+queue.class.log
+
+# Database files (if using local SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build outputs
+dist/
+build/
+out/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Sensitive configuration files
+config.json
+credentials.json
+
+# Images (if they contain sensitive information)
+# Uncomment the next line if images should not be tracked
+# Imagenes/
+
+# Database backups
+*.sql.backup
+*.dump
