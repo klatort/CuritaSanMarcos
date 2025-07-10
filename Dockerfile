@@ -1,14 +1,10 @@
-# Use Node.js 21 LTS Alpine as per BuilderBot documentation
-FROM node:21-alpine3.18 AS builder
-
-# Enable Corepack and prepare for PNPM installation to increase performance
-RUN corepack enable && corepack prepare pnpm@latest --activate
-ENV PNPM_HOME=/usr/local/bin
+# Use Node.js 18 LTS Alpine for better compatibility
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies and create user
 RUN apk add --no-cache \
     ca-certificates \
     chromium \
@@ -20,21 +16,30 @@ RUN apk add --no-cache \
     nss \
     python3 \
     ttf-freefont \
-    wget
+    wget \
+    && addgroup -g 1001 -S nodejs \
+    && adduser -S builderbot -u 1001 -G nodejs
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy package files and install dependencies
+# Copy package files and install dependencies as root
 COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 # Copy application code
 COPY . .
 
-# Create session directory with proper permissions
-RUN mkdir -p /app/bot_sessions && chmod 755 /app/bot_sessions
+# Create directories and set proper permissions
+RUN mkdir -p /app/bot_sessions \
+    && mkdir -p /app/baileys_auth_info \
+    && chown -R builderbot:nodejs /app \
+    && chmod -R 755 /app/bot_sessions \
+    && chmod -R 755 /app/baileys_auth_info
+
+# Switch to non-root user
+USER builderbot
 
 # Expose ports (3000 for QR portal, 3001 for health check)
 EXPOSE 3000 3001

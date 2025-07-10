@@ -6,6 +6,7 @@ const MySQLAdapter = require('@bot-whatsapp/database/mysql')
 const QRPortalWeb = require('@bot-whatsapp/portal')
 const http = require('http')
 const path = require('path')
+const fs = require('fs').promises
 require('dotenv').config()
 
 /**
@@ -48,6 +49,19 @@ const flowWelcome = require('./flujos/flowWelcome')
 
 const main = async () => {
     try {
+        console.log('🚀 Iniciando bot de WhatsApp...')
+        
+        // Ensure required directories exist
+        const requiredDirs = ['bot_sessions', 'baileys_auth_info']
+        for (const dir of requiredDirs) {
+            try {
+                await fs.mkdir(dir, { recursive: true })
+                console.log(`📁 Directory ready: ${dir}`)
+            } catch (error) {
+                console.log(`📁 Directory already exists: ${dir}`)
+            }
+        }
+        
         // Configurar la base de datos MySQL
         const adapterDB = new MySQLAdapter({
             host: MYSQL_DB_HOST,

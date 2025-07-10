@@ -23,7 +23,8 @@ services:
       - SERVER_IP=${SERVER_IP:-localhost}
       - SERVER_DOMAIN=${SERVER_DOMAIN:-}
     volumes:
-      - bot-sessions:/app/bot_sessions:rw  # Following BuilderBot docs pattern
+      - bot-sessions:/app/bot_sessions:rw
+      - baileys-auth:/app/baileys_auth_info:rw
     networks:
       - curita-network
     ports:
@@ -70,6 +71,8 @@ volumes:
   mysql-data:
     driver: local
   bot-sessions:
+    driver: local
+  baileys-auth:
     driver: local
 
 networks:
