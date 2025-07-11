@@ -50,7 +50,7 @@ const main = async () => {
     try {
         console.log('🚀 Iniciando bot de WhatsApp...')
         
-        // Ensure required directories exist
+        // Ensure required directories exist and initialize session files
         const requiredDirs = ['bot_sessions', 'baileys_auth_info']
         for (const dir of requiredDirs) {
             try {
@@ -58,6 +58,28 @@ const main = async () => {
                 console.log(`📁 Directory ready: ${dir}`)
             } catch (error) {
                 console.log(`📁 Directory already exists: ${dir}`)
+            }
+        }
+
+        // Initialize Baileys session files to prevent "chats is not iterable" error
+        const sessionFiles = [
+            { path: 'baileys_auth_info/creds.json', content: '{}' },
+            { path: 'baileys_auth_info/app-state-sync-version.json', content: '{"version":1}' },
+            { path: 'baileys_auth_info/app-state-sync-key.json', content: '{"keys":[]}' }
+        ]
+
+        for (const file of sessionFiles) {
+            try {
+                await fs.access(file.path)
+                console.log(`📄 Session file exists: ${file.path}`)
+            } catch (error) {
+                // File doesn't exist, create it
+                try {
+                    await fs.writeFile(file.path, file.content, 'utf8')
+                    console.log(`📄 Session file created: ${file.path}`)
+                } catch (writeError) {
+                    console.log(`⚠️ Could not create session file ${file.path}:`, writeError.message)
+                }
             }
         }
         
